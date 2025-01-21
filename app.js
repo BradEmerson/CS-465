@@ -7,7 +7,7 @@ var logger = require('morgan');
 var indexRouter = require('./app_server/routes/index'); // Added app_server to path (BME 1/13/2025)
 var usersRouter = require('./app_server/routes/users'); // Added app_server to path (BME 1/13/2025)
 var travelRouter = require('./app_server/routes/travel'); // Added new import (BME 1/13/2025)
-const hbs = require('hbs');
+const hbs = require('hbs'); // imported express-compatible handlebars (as opposed to standalone handlebars lib) as hbs (BME 1/13/2025)
 
 var app = express();
 
