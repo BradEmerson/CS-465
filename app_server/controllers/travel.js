@@ -15,17 +15,19 @@ const options = {
 const travel = async function (req, res, next) {
     console.log('TRAVEL CONTROLLER BEGIN');
     await fetch(tripsEndpoint, options)
-    .then(res => res.json())
+    .then(res => res.json()) // Commented out for testing (BME 2/5/2025)
     .then(json => {
         console.log(json);
         let message = null;
         if(!(json instanceof Array)) {
             message = 'API lookup error';
+            console.log(message);
             json = [];
         }
         else {
             if(!json.length) {
                 message = 'No trips exist in our database!';
+                console.log(message);
             }
         }
         res.render('travel', {title: "Travelr Getaways", trips: json});
