@@ -2,9 +2,6 @@
 	<div id="logo">
 		<a href="index.html"><img src="images/logo.png" alt="LOGO" height="100" width="200"></a>
 	</div>
-	<div id="blatant-notice" style="background-color: yellow; color: red; text-align: center; font-size: 24px; font-weight: bold; padding: 20px; margin-top: 10px;">
-        🚨 THIS PAGE IS RENDERED USING HEADER.HBS! 🚨
-    </div>
 	<div id="navigation">
 		<ul>
 			<li>
@@ -20,8 +17,23 @@
 				<a href="meals.html">Meals</a>
 			</li>
 			<li>
-				<a href="news.html">News</a>
+    			<a href="news.html">News</a>
 			</li>
+				{{#if loggedIn}}
+			<li>
+    			<a href="/reservations">Reservations</a>
+			</li>
+			<li>
+    			<a href="#" id="logout-btn">Logout</a>
+			</li>
+				{{else}}
+			<li>
+    			<a href="/login">Login</a>
+			</li>
+			<li>
+    			<a href="/register">Register</a>
+			</li>
+				{{/if}}
 			<li>
 				<a href="about.html">About</a>
 			</li>
@@ -31,3 +43,19 @@
 		</ul>
 	</div>
 </div>
+
+<script>
+document.addEventListener("DOMContentLoaded", () => {
+    document.getElementById("logout-btn")?.addEventListener("click", async () => {
+        try {
+            //  Clears cookie from browser (BME 2/19/2025)
+            await fetch("/api/logout", { method: "POST" });
+
+            // Redirects to login page (BME 2/19/2025)
+            window.location.href = "/travel";
+        } catch (error) {
+            console.error("Logout failed:", error);
+        }
+    });
+});
+</script>

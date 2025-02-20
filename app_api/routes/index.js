@@ -14,7 +14,7 @@ const auth = jwt({
 const tripsController = require('../controllers/trips');
 const authController = require('../controllers/authentication');
 
-// define route for our trips endpoint
+// Define route for our trips endpoint
 router // Added login endpoint (BME 2/18/2025)
     .route('/login')
     .post(authController.login);
@@ -25,6 +25,14 @@ router
     .route('/trips') // Changed .route('trips') to ('/trips') (BME 2/4/2025)
     .get(tripsController.tripsList) // GET Method routes tripList
     .post(auth, tripsController.tripsAddTrip); // Added auth injection middleware (BME 2/18/2025)
+    
+// Added logout route (BME 2/19/2025)
+router
+    .post("/logout", (req, res) => {
+        res.cookie("jwt", "", { expires: new Date(0), httpOnly: true }); // Expire JWT (BME 2/19/2025)
+        res.status(200).json({ message: "Logged out successfully" });
+});
+    
 
 // GET Method routes tripsFindByCode - requires parameter (BME 2/4/2025)
 // Experimenting with line breaks and syntax to better understand JS (BME 2/5/2025)

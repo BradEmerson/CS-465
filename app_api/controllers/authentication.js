@@ -27,34 +27,44 @@ const register = async (req, res) => {
 
 const login = (req, res) => {
     if (!req.body.email || !req.body.password) {
-        return res
-            .status(400)
-            .json({ "message": "All fields required" });
+        return res.status(400).json({ "message": "All fields required" });
     }
 
     passport.authenticate('local', (err, user, info) => {
-
         console.log("Login Error: ", err);
         console.log("Authenticated User: ", user);
         console.log("Auth Info: ", info);
 
         if (err) {
-            return res
-                .status(404)
-                .json(err);
+            return res.status(404).json(err);
         }
+
         if (user) {
-            const token = user.generateJwt();
-            res
-                .status(200)
-                .json({ token });
+            const token = user.generateJwt(); // Generate JWT before using it (BME 2/19/2025)
+
+            //  Check if request comes from Admin SPA (BME 2/19/2025)
+            const isApiRequest = req.headers["accept"]?.includes("application/json");
+
+            if (isApiRequest) {
+                //  If the request comes from the SPA, return the token in JSON (BME 2/19/2025)
+                return res.status(200).json({ token });
+            } else {
+                // If request comes from the customer website, store JWT in cookies (BME 2/19/2025)
+                res.cookie("jwt", token, { 
+                    httpOnly: true, 
+                    secure: false,  
+                    sameSite: "Strict",
+                    maxAge: 7 * 24 * 60 * 60 * 1000
+                });
+                return res.status(200).json({ message: "Login successful" });
+            }
         } else {
-            res
-                .status(401)
-                .json(info);
+            return res.status(401).json(info);
         }
     })(req, res);
 };
+
+
 
 module.exports = {
     register,

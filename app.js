@@ -40,6 +40,7 @@ app.use(express.urlencoded({ extended: false }));
 app.use(cookieParser());
 app.use(express.static(path.join(__dirname, 'public')));
 app.use(passport.initialize()); // Added (BME 2/18/2025)
+app.use(cookieParser()); // Added for Express customer-facing web app login authentication (BME 2/19/2025)
 
 // Enable CORS (BME 2/15/2025)
 // (Note to professor: Angular wouldn't render the page upon completion of guide page 35, after several hours of troubleshooting,
