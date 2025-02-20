@@ -1,0 +1,9 @@
+<div class="container">
+    <p *ngIf="!isLoggedIn()">Please login to continue</p>
+  
+    <!-- Show trips if logged in -->
+    <div>
+      <app-trip-listing></app-trip-listing>
+    </div>
+  </div>
+  

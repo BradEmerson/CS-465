@@ -4,13 +4,15 @@ import { FormBuilder, FormGroup, Validators, ReactiveFormsModule } from "@angula
 import { Router } from "@angular/router";
 import { TripDataService } from '../services/trip-data.service';
 import { Trip } from '../models/trip';
+import { HttpHeaders } from '@angular/common/http';
+import { AuthenticationService } from '../services/authentication.service';
 
 @Component({
   selector: 'app-edit-trip',
   standalone: true,
   imports: [CommonModule, ReactiveFormsModule],
   templateUrl: './edit-trip.component.html',
-  styleUrl: './edit-trip.component.css'
+  styleUrls: ['./edit-trip.component.css']
 })
 
 // Implement OnInit because the component does some heavy lifting when it is instantiated. (BME 2/15/2025)
@@ -21,11 +23,12 @@ export class EditTripComponent implements OnInit {
   submitted = false;
   message: string = "";
 
-  // Constructor initializes the form builder, router, and trip data service (BME 2/15/2025)
+  // Constructor initializes the form builder, router, trip data service, and authentication service
   constructor(
     private formBuilder: FormBuilder,
     private router: Router,
-    private tripDataService: TripDataService
+    private tripDataService: TripDataService,
+    private authenticationService: AuthenticationService  // Added missing injection for authenticationService
   ) {}
 
   // ngOnInit method retrieves trip data and populates the form (BME 2/15/2025)
@@ -69,12 +72,17 @@ export class EditTripComponent implements OnInit {
     });
   }
 
-  // onSubmit method handles form submission and updates the trip data (BME 2/15/2025)
+  // onSubmit method handles form submission and updates the trip data (BME 2/15/2025) // Updated 2/18/2025
   public onSubmit(): void {
     this.submitted = true;
 
     if (this.editForm.valid) {
-      this.tripDataService.updateTrip(this.editForm.value).subscribe({
+
+      const token = this.authenticationService.getToken(); // New (BME 2/18/2025)
+      console.log('Token: ', token);
+      const headers = new HttpHeaders().set('Authorization', `Bearer ${token}`); // New (BME 2/18/2025)
+
+      this.tripDataService.updateTrip(this.editForm.value, { headers }).subscribe({
         next: (value: any) => {
           console.log(value);
           this.router.navigate([""]);

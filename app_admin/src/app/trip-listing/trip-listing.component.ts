@@ -7,6 +7,8 @@ import { TripDataService } from '../services/trip-data.service'; // Added (BME 2
 
 import { Router  } from '@angular/router'; // Added (BME 2/15/2025)
 
+import { AuthenticationService } from '../services/authentication.service'; // Added (BME 2/18/2025)
+
 
 
 @Component({
@@ -14,7 +16,7 @@ import { Router  } from '@angular/router'; // Added (BME 2/15/2025)
   standalone: true,
   imports: [CommonModule, TripCardComponent],
   templateUrl: './trip-listing.component.html',
-  styleUrl: './trip-listing.component.css',
+  styleUrls: ['./trip-listing.component.css'],
   providers: [TripDataService] // Added (BME 2/15/2025)
 })
 
@@ -24,7 +26,8 @@ export class TripListingComponent implements OnInit { // Adjusted for individual
 
   constructor(
     private tripDataService: TripDataService,
-    private router: Router // Added (BME 2/15/2025)
+    private router: Router, // Added (BME 2/15/2025)
+    private authenticationService: AuthenticationService // Added (BME 2/18/2025)
   ) {
     console.log('trip-listing constructor');
   }
@@ -34,28 +37,33 @@ export class TripListingComponent implements OnInit { // Adjusted for individual
   }
 
   private getStuff(): void {
-    this.tripDataService.getTrips()
-      .subscribe({
+    console.log("getStuff() is running...");
+
+    this.tripDataService.getTrips().subscribe({
         next: (value: any) => {
-          this.trips = value;
-          if(value.length > 0)
-          {
-            this.message = 'There are ' + value.length + ' trips available.';
-          }
-          else
-          {
-            this.message = 'There were no trips retrieved from the database';
-          }
-          console.log(this.message);
+            console.log("Trips received:", value);  // ✅ Log the API response
+            this.trips = value;
+            if (value.length > 0) {
+                this.message = `There are ${value.length} trips available.`;
+            } else {
+                this.message = "There were no trips retrieved from the database";
+            }
+            console.log(this.message);
         },
         error: (error: any) => {
-          console.log('Error: ' + error);
+            console.error("Error fetching trips:", error);  // ❌ Log any errors
         }
-      })
-  }
+    });
+}
+
 
   ngOnInit(): void {
     console.log('ngOnInit');
     this.getStuff();
   }
+
+  public isLoggedIn(): boolean {
+    return this.authenticationService.isLoggedIn();
+  }
+
 }
